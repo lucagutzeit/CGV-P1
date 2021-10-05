@@ -112,7 +112,7 @@
 		var sim_year     = 1;                             // one simulated earth year in minutes
 		var sim_day      = sim_year / 365.24;               // one simulated earth day in minutes
 		var sim_month    = sim_year / (365.24 / 27.3);      // one simulated moon loop in minutes
-		var sim_mars_sol = sim_year * (687.0 / 365.24) 	    // one simulated mars year in minutes
+		var sim_mars_sol = sim_year * (687.0 / 365.24); 	    // one simulated mars year in minutes
 
 		var moon_local_pos = new BABYLON.Vector3(-1.0, 0, 0);
 		var satellite_local_pos = new BABYLON.Vector3(-1.0, 0, 0);
@@ -136,6 +136,13 @@
         satellite.position.x = moon.position.x - 0.2;
 		satellite.position.y = 0.0;
 		satellite.position.z = 0.0;
+
+		// Set initial previous position
+		Object.assign(earth, {previousPosition: earth.position});
+		Object.assign(moon, {previousPosition: moon.position});
+		Object.assign(sun, {previousPosition: sun.position});
+		Object.assign(mars, {previousPosition: mars.position});
+		Object.assign(satellite, {previousPosition: satellite.position});
 		
 		scene.beforeRender = function() {
 			var d 		  = new Date();
@@ -143,25 +150,10 @@
 			var elapsed_t = time - startTime;   // milliseconds since start
 			var delta_t   = time - lastTime;    // milliseconds since last frame
 			lastTime      = time;
-
-			var min2ms  = 1000.0 * 60.0;        // milliseconds in minutes
-
-			var rad_per_ms = (2*Math.PI/(min2ms*sim_year));
-			var alpha_earth = delta_t * rad_per_ms;
 			
-			var rad_per_ms2 = (2*Math.PI/(min2ms*sim_day));
-			var alpha_earth2 = delta_t * rad_per_ms2;
-			
-
 			// Earth position and rotation
-			earth.position.x = (Math.cos(alpha_earth) * earth.position.x) + (-Math.sin(alpha_earth) * earth.position.z) ;
-			earth.position.z = (Math.sin(alpha_earth) * earth.position.x) + (Math.cos(alpha_earth) * earth.position.z) ;
-			
-			
-			earth.rotation.y = earth.rotation.y + alpha_earth2;
-			//console.log(earth.rotation.y);
-			time_passed_in_sec = elapsed_t/1000
-			//console.log("time: " + time_passed_in_sec + " rot_angle: " + earth.rotation.y)
+			rotatePosition(earth, sun, getAlpha(sim_year, delta_t));
+			earth.rotation.y += getAlpha(sim_day, delta_t);
 			
 			// Moon position and rotation
 			// ...
@@ -170,7 +162,6 @@
 			// ...
 			
 			// Mars position and rotation
-			// ...
 
 //			console.log(BABYLON.Tools.GetFps().toFixed() + " fps");
 		};
@@ -196,6 +187,44 @@
             engine.resize();
         });
 	};
+
+	/**
+	 * Calculates the degree an object should move, based on the time since last frame.
+	 * @param 	{Number} 	arg1 	Time for one rotation in minutes
+	 * @param 	{Number} 	arg2 	Time since last frame
+	 * @return 	{Number} 			Alpha
+	 */
+	function getAlpha(min_per_rotation, delta_t) {
+		var min2ms  = 1000.0 * 60.0;
+		var ms_per_rotation = min2ms * min_per_rotation;
+		var rad_per_ms = 2 * Math.PI / ms_per_rotation;
+
+		return rad_per_ms * delta_t;
+	}
+
+	/**
+	 * Rotates an object around a given center object
+	 * @param 	{Object} 	arg1 	Object to move
+	 * @param 	{Object} 	arg2 	Object that is at the center of the movement
+	 * @oaram 	{Number} 	arg3 	Degree of movement
+	 */
+	function rotatePosition(object, rotationCenterObject, alpha) {
+		// Set previous position to use for satellites of object
+		object.previousPosition.x = object.position.x;
+		object.previousPosition.z = object.position.z;
+
+		// Move so that (0, 0) is rotation center
+		var centered_position_x = object.position.x - rotationCenterObject.previousPosition.x;
+		var centered_position_z = object.position.z - rotationCenterObject.previousPosition.z;
+
+		// Calculates new position based on alpha
+		object.position.x = (Math.cos(alpha) * centered_position_x) + (-Math.sin(alpha) * centered_position_z);
+		object.position.z = (Math.sin(alpha) * centered_position_x) + (Math.cos(alpha) * centered_position_z);
+
+		// Move so that rotationCenterObject is rotation center
+		object.position.x += rotationCenterObject.position.x;
+		object.position.z += rotationCenterObject.position.z;
+	}
 	</script>
 </body>
 </html>
