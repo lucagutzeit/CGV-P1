@@ -1,233 +1,294 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>CGV-Aufgabe 1</title>
     <script src="babylon.custom.js"></script>
-	<style type="text/css">
-        html,body,canvas {
-            width:100%;
-            height:100%;
-            padding:0;
-            margin:0;
-            overflow:hidden;
-        }
+    <style type="text/css">
+      html,
+      body,
+      canvas {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <canvas id="renderCanvas"></canvas>
-	<script>
-    // Check support
-    if (!BABYLON.Engine.isSupported()) {
-        window.alert('Browser not supported');
-    } else {
-		var canvas = document.getElementById("renderCanvas");
-		var engine = new BABYLON.Engine(canvas, true);
-		
-		var scene = new BABYLON.Scene(engine);
+    <script>
+      // Check support
+      if (!BABYLON.Engine.isSupported()) {
+        window.alert("Browser not supported");
+      } else {
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
 
-		// Reguläre Kamera mit festem Blickpunkt
-        var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", -Math.PI/4.0, 0.25*Math.PI, 4.0, new BABYLON.Vector3(0, 0, 0), scene);
+        var scene = new BABYLON.Scene(engine);
 
+        // Reguläre Kamera mit festem Blickpunkt
+        var camera = new BABYLON.ArcRotateCamera(
+          "ArcRotateCamera",
+          -Math.PI / 4.0,
+          0.25 * Math.PI,
+          4.0,
+          new BABYLON.Vector3(0, 0, 0),
+          scene
+        );
 
-        // Kamera für VR mit Device Orientation zum Herumschauen 
-		//var camera = new BABYLON.DeviceOrientationCamera("ArcRotateCamera", new BABYLON.Vector3(1, 1, 1), scene);
-		//camera.setCameraRigMode(20,{interaxialDistance: 0.0637});
-		
-		var sun = BABYLON.Mesh.CreateSphere("Sun", 10.0, 0.05, scene);
-		var earth = BABYLON.Mesh.CreateSphere("Earth", 30.0, 0.3, scene);	
-		var moon = BABYLON.Mesh.CreateSphere("Moon", 20.0, 0.15, scene);
-		var mars = BABYLON.Mesh.CreateSphere("Mars", 30.0, 0.25, scene);
-        var satellite = BABYLON.Mesh.CreateSphere("Satellite", 20.0, 0.05, scene);
-				
-		var material1 = new BABYLON.StandardMaterial("default1", scene);
-		material1.diffuseTexture = new BABYLON.Texture("assets/earth.jpg", scene);
-		material1.specularColor = new BABYLON.Color3(0.1,0.1,0.1);
-		material1.emissiveColor = new BABYLON.Color3(0.2,0.2,0.2);
-		material1.diffuseTexture.vScale = -1;
-		material1.diffuseTexture.uScale = -1;
-		
-		var material2 = new BABYLON.StandardMaterial("default2", scene);
-		material2.diffuseTexture = new BABYLON.Texture("assets/moon.jpg", scene);
-		material2.specularColor = new BABYLON.Color3(0,0,0);
-		material2.emissiveColor = new BABYLON.Color3(0.2,0.2,0.2);
-		material2.diffuseTexture.vScale = -1;
-		material2.diffuseTexture.uScale = -1;
+        // Kamera für VR mit Device Orientation zum Herumschauen
+        //var camera = new BABYLON.DeviceOrientationCamera("ArcRotateCamera", new BABYLON.Vector3(1, 1, 1), scene);
+        //camera.setCameraRigMode(20,{interaxialDistance: 0.0637});
 
-		var material3 = new BABYLON.StandardMaterial("default3", scene);
-		material3.diffuseTexture = new BABYLON.Texture("assets/sun.jpg", scene);
-		material3.specularColor = new BABYLON.Color3(0,0,0);
-		material3.emissiveColor = new BABYLON.Color3(1,1,1);
+        var sun = BABYLON.Mesh.CreateSphere("Sun", 10.0, 0.05, scene);
+        var earth = BABYLON.Mesh.CreateSphere("Earth", 30.0, 0.3, scene);
+        var moon = BABYLON.Mesh.CreateSphere("Moon", 20.0, 0.15, scene);
+        var mars = BABYLON.Mesh.CreateSphere("Mars", 30.0, 0.25, scene);
+        var satellite = BABYLON.Mesh.CreateSphere(
+          "Satellite",
+          20.0,
+          0.05,
+          scene
+        );
 
-		var material4 = new BABYLON.StandardMaterial("default4", scene);
-		material4.diffuseTexture = new BABYLON.Texture("assets/mars.jpg", scene);
-		material4.specularColor = new BABYLON.Color3(0,0,0);
-		material4.emissiveColor = new BABYLON.Color3(0.2,0.2,0.2);
-		material4.diffuseTexture.vScale = -1
-		material4.diffuseTexture.uScale = -1;
+        var material1 = new BABYLON.StandardMaterial("default1", scene);
+        material1.diffuseTexture = new BABYLON.Texture(
+          "assets/earth.jpg",
+          scene
+        );
+        material1.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+        material1.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+        material1.diffuseTexture.vScale = -1;
+        material1.diffuseTexture.uScale = -1;
+
+        var material2 = new BABYLON.StandardMaterial("default2", scene);
+        material2.diffuseTexture = new BABYLON.Texture(
+          "assets/moon.jpg",
+          scene
+        );
+        material2.specularColor = new BABYLON.Color3(0, 0, 0);
+        material2.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+        material2.diffuseTexture.vScale = -1;
+        material2.diffuseTexture.uScale = -1;
+
+        var material3 = new BABYLON.StandardMaterial("default3", scene);
+        material3.diffuseTexture = new BABYLON.Texture("assets/sun.jpg", scene);
+        material3.specularColor = new BABYLON.Color3(0, 0, 0);
+        material3.emissiveColor = new BABYLON.Color3(1, 1, 1);
+
+        var material4 = new BABYLON.StandardMaterial("default4", scene);
+        material4.diffuseTexture = new BABYLON.Texture(
+          "assets/mars.jpg",
+          scene
+        );
+        material4.specularColor = new BABYLON.Color3(0, 0, 0);
+        material4.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+        material4.diffuseTexture.vScale = -1;
+        material4.diffuseTexture.uScale = -1;
 
         var material5 = new BABYLON.StandardMaterial("default5", scene);
-        material5.diffuseTexture = new BABYLON.Texture("assets/metal.jpg", scene);
+        material5.diffuseTexture = new BABYLON.Texture(
+          "assets/metal.jpg",
+          scene
+        );
         material5.specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
         material5.emissiveColor = new BABYLON.Color3(0.3, 0.3, 0.3);
         material5.diffuseTexture.vScale = -1;
         material5.diffuseTexture.uScale = -1;
 
-		earth.material = material1;
-		moon.material = material2;
-		sun.material = material3;
-		mars.material = material4;
-		satellite.material = material5;
+        earth.material = material1;
+        moon.material = material2;
+        sun.material = material3;
+        mars.material = material4;
+        satellite.material = material5;
 
-		// Show coordinate system, BabylonJS uses left-handed coordinates!
-		// x-axis: red, y-axis: yellow, z-axis: green
-		var cylinder1 = BABYLON.Mesh.CreateCylinder("cylinder1", 0.2, 0.01, 0.01, 4, scene);
-		var cylinder2 = BABYLON.Mesh.CreateCylinder("cylinder2", 0.2, 0.01, 0.01, 4, scene, false);
-		var cylinder3 = BABYLON.Mesh.CreateCylinder("cylinder3", 0.2, 0.01, 0.01, 4, scene, false);
-		var cmat1 = new BABYLON.StandardMaterial("cmat1", scene);
-		var cmat2 = new BABYLON.StandardMaterial("cmat2", scene);
-		var cmat3 = new BABYLON.StandardMaterial("cmat3", scene);
-		cmat1.emissiveColor = new BABYLON.Color3(1,0,0); // red
-		cmat2.emissiveColor = new BABYLON.Color3(1,1,0); // yellow
-		cmat3.emissiveColor = new BABYLON.Color3(0,1,0); // green
-		cylinder1.material = cmat1;
-		cylinder2.material = cmat2;
-		cylinder3.material = cmat3;
-		cylinder1.position.x = 0.1;
-		cylinder1.rotation.z = 0.5*Math.PI;
-		cylinder2.position.y = 0.1;
-		cylinder2.rotation.z = 0.0;
-		cylinder3.position.z = 0.1;
-		cylinder3.rotation.x = 0.5*Math.PI;
-		
-		var light = new BABYLON.PointLight("dir01", new BABYLON.Vector3(-0.0, -0.0, 0.0), scene);
-		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
+        // Show coordinate system, BabylonJS uses left-handed coordinates!
+        // x-axis: red, y-axis: yellow, z-axis: green
+        var cylinder1 = BABYLON.Mesh.CreateCylinder(
+          "cylinder1",
+          0.2,
+          0.01,
+          0.01,
+          4,
+          scene
+        );
+        var cylinder2 = BABYLON.Mesh.CreateCylinder(
+          "cylinder2",
+          0.2,
+          0.01,
+          0.01,
+          4,
+          scene,
+          false
+        );
+        var cylinder3 = BABYLON.Mesh.CreateCylinder(
+          "cylinder3",
+          0.2,
+          0.01,
+          0.01,
+          4,
+          scene,
+          false
+        );
+        var cmat1 = new BABYLON.StandardMaterial("cmat1", scene);
+        var cmat2 = new BABYLON.StandardMaterial("cmat2", scene);
+        var cmat3 = new BABYLON.StandardMaterial("cmat3", scene);
+        cmat1.emissiveColor = new BABYLON.Color3(1, 0, 0); // red
+        cmat2.emissiveColor = new BABYLON.Color3(1, 1, 0); // yellow
+        cmat3.emissiveColor = new BABYLON.Color3(0, 1, 0); // green
+        cylinder1.material = cmat1;
+        cylinder2.material = cmat2;
+        cylinder3.material = cmat3;
+        cylinder1.position.x = 0.1;
+        cylinder1.rotation.z = 0.5 * Math.PI;
+        cylinder2.position.y = 0.1;
+        cylinder2.rotation.z = 0.0;
+        cylinder3.position.z = 0.1;
+        cylinder3.rotation.x = 0.5 * Math.PI;
 
-		scene.clearColor = new BABYLON.Color3(0.05,0.05,0.2);
+        var light = new BABYLON.PointLight(
+          "dir01",
+          new BABYLON.Vector3(-0.0, -0.0, 0.0),
+          scene
+        );
+        light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 
-		var d = new Date();
-		var startTime = d.getTime();
-		var lastTime  = startTime;
+        scene.clearColor = new BABYLON.Color3(0.05, 0.05, 0.2);
 
-		var sim_year     = 1;                             // one simulated earth year in minutes
-		var sim_day      = sim_year / 365.24;               // one simulated earth day in minutes
-		var sim_month    = sim_year / (365.24 / 27.3);      // one simulated moon loop in minutes
-		var sim_mars_sol = sim_year * (687.0 / 365.24); 	    // one simulated mars year in minutes
-		var sim_mars_day = sim_mars_sol / (687 * 24 / 24.65);
+        var d = new Date();
+        var startTime = d.getTime();
+        var lastTime = startTime;
 
-		var moon_local_pos = new BABYLON.Vector3(-1.0, 0, 0);
-		var satellite_local_pos = new BABYLON.Vector3(-1.0, 0, 0);
+        var sim_year = 2; // one simulated earth year in minutes
+        var sim_day = sim_year / 365.24; // one simulated earth day in minutes
+        var sim_month = sim_year / (365.24 / 27.3); // one simulated moon loop in minutes
+        var sim_mars_sol = sim_year * (687.0 / 365.24); // one simulated mars year in minutes
+        var sim_mars_day = sim_mars_sol / ((687 * 24) / 24.65);
 
-		// Set initial earth position
-		earth.position.x = 1.0;
-		earth.position.y = 0.0;
-		earth.position.z = 0.0;
+        var moon_local_pos = new BABYLON.Vector3(-1.0, 0, 0);
+        var satellite_local_pos = new BABYLON.Vector3(-1.0, 0, 0);
 
-		// Set initial moon position
-		moon.position.x = earth.position.x - 0.5;
-		moon.position.y = earth.position.y;
-		moon.position.z = earth.position.z;		
+        // Set initial earth position
+        earth.position.x = 1.0;
+        earth.position.y = 0.0;
+        earth.position.z = 0.0;
 
-		// Set initial mars position
-		mars.position.x = 2.0;
-		mars.position.y = 0.0;
-		mars.position.z = 0.0;		
+        // Set initial moon position
+        moon.position.x = earth.position.x - 0.5;
+        moon.position.y = earth.position.y;
+        moon.position.z = earth.position.z;
+
+        // Set initial mars position
+        mars.position.x = 2.0;
+        mars.position.y = 0.0;
+        mars.position.z = 0.0;
 
         // Set initial satellite position
         satellite.position.x = moon.position.x - 0.2;
-		satellite.position.y = 0.0;
-		satellite.position.z = 0.0;
+        satellite.position.y = 0.0;
+        satellite.position.z = 0.0;
 
-		// Set initial previous position
-		Object.assign(earth, {previousPosition: earth.position});
-		Object.assign(moon, {previousPosition: moon.position});
-		Object.assign(sun, {previousPosition: sun.position});
-		Object.assign(mars, {previousPosition: mars.position});
-		Object.assign(satellite, {previousPosition: satellite.position});
-		
-		scene.beforeRender = function() {
-			var d 		  = new Date();
-			var time      = d.getTime();        // get milliseconds since 1970
-			var elapsed_t = time - startTime;   // milliseconds since start
-			var delta_t   = time - lastTime;    // milliseconds since last frame
-			lastTime      = time;
-			
-			// Earth position and rotation
-			rotatePosition(earth, sun, getAlpha(sim_year, delta_t));
-			earth.rotation.y += getAlpha(sim_day, delta_t);
-			
-			// Moon position and rotation
-			// ...
+        // Set initial previous position
+        Object.assign(earth, { previousPosition: earth.position });
+        Object.assign(moon, { previousPosition: moon.position });
+        Object.assign(sun, { previousPosition: sun.position });
+        Object.assign(mars, { previousPosition: mars.position });
+        Object.assign(satellite, { previousPosition: satellite.position });
 
-			// Satellite position and rotation
-			// ...
-			
-			// Mars position and rotation
-			rotatePosition(mars, sun, getAlpha(sim_mars_sol, delta_t));
-			mars.rotation.y += getAlpha(sim_mars_day, delta_t);
+        scene.beforeRender = function () {
+          var d = new Date();
+          var time = d.getTime(); // get milliseconds since 1970
+          var elapsed_t = time - startTime; // milliseconds since start
+          var delta_t = time - lastTime; // milliseconds since last frame
+          lastTime = time;
 
-//			console.log(BABYLON.Tools.GetFps().toFixed() + " fps");
-		};
+          // Earth position and rotation
+          rotatePosition(earth, sun, getAlpha(sim_year, delta_t));
+          earth.rotation.y += getAlpha(sim_day, delta_t);
+
+          // Moon position and rotation
+          rotatePosition(moon, earth, getAlpha(sim_month, delta_t));
+          moon.rotation.y -= getAlpha(sim_month, delta_t); //dreht sich noch minimal zu schnell? ->wahrscheinlich ungenaue Werte für den Monat Mathematisch aber korrekt
+
+          // Satellite position and rotation
+          var satellite_cycle = sim_month / 3;
+          rotatePosition(satellite, moon, -getAlpha(satellite_cycle, delta_t)); //Center Position ist nicht auf dem mond. Rundungsfehler?
+          satellite.rotation.y += getAlpha(satellite_cycle, delta_t);
+
+          // Mars position and rotation
+          rotatePosition(mars, sun, getAlpha(sim_mars_sol, delta_t));
+          mars.rotation.y += getAlpha(sim_mars_day, delta_t);
+
+          //			console.log(BABYLON.Tools.GetFps().toFixed() + " fps");
+        };
 
         scene.activeCamera.attachControl(canvas);
-		// Render loop
-		var renderLoop = function () {
-			// Start new frame
-			engine.beginFrame();
+        // Render loop
+        var renderLoop = function () {
+          // Start new frame
+          engine.beginFrame();
 
-			scene.render();
+          scene.render();
 
-			// Present
-			engine.endFrame();
+          // Present
+          engine.endFrame();
 
-			// Register new frame
-			BABYLON.Tools.QueueNewFrame(renderLoop);
-		};
-		BABYLON.Tools.QueueNewFrame(renderLoop);
-		
+          // Register new frame
+          BABYLON.Tools.QueueNewFrame(renderLoop);
+        };
+        BABYLON.Tools.QueueNewFrame(renderLoop);
+
         // Resize
         window.addEventListener("resize", function () {
-            engine.resize();
+          engine.resize();
         });
-	};
+      }
 
-	/**
-	 * Calculates the degree an object should move, based on the time since last frame.
-	 * @param 	{Number} 	arg1 	Time for one rotation in minutes
-	 * @param 	{Number} 	arg2 	Time since last frame
-	 * @return 	{Number} 			Alpha
-	 */
-	function getAlpha(min_per_rotation, delta_t) {
-		var min2ms  = 1000.0 * 60.0;
-		var ms_per_rotation = min2ms * min_per_rotation;
-		var rad_per_ms = 2 * Math.PI / ms_per_rotation;
+      /**
+       * Calculates the degree an object should move, based on the time since last frame.
+       * @param 	{Number} 	arg1 	Time for one rotation in minutes
+       * @param 	{Number} 	arg2 	Time since last frame
+       * @return 	{Number} 			Alpha
+       */
+      function getAlpha(min_per_rotation, delta_t) {
+        var min2ms = 1000.0 * 60.0;
+        var ms_per_rotation = min2ms * min_per_rotation;
+        var rad_per_ms = (2 * Math.PI) / ms_per_rotation;
 
-		return rad_per_ms * delta_t;
-	}
+        return rad_per_ms * delta_t;
+      }
 
-	/**
-	 * Rotates an object around a given center object
-	 * @param 	{Object} 	arg1 	Object to move
-	 * @param 	{Object} 	arg2 	Object that is at the center of the movement
-	 * @oaram 	{Number} 	arg3 	Degree of movement
-	 */
-	function rotatePosition(object, rotationCenterObject, alpha) {
-		// Set previous position to use for satellites of object
-		object.previousPosition.x = object.position.x;
-		object.previousPosition.z = object.position.z;
+      /**
+       * Rotates an object around a given center object
+       * @param 	{Object} 	arg1 	Object to move
+       * @param 	{Object} 	arg2 	Object that is at the center of the movement
+       * @oaram 	{Number} 	arg3 	Degree of movement
+       */
+      function rotatePosition(object, rotationCenterObject, alpha) {
+        // Set previous position to use for satellites of object
+        object.previousPosition.x = object.position.x;
+        object.previousPosition.z = object.position.z;
 
-		// Move so that (0, 0) is rotation center
-		var centered_position_x = object.position.x - rotationCenterObject.previousPosition.x;
-		var centered_position_z = object.position.z - rotationCenterObject.previousPosition.z;
+        // Move so that (0, 0) is rotation center
+        var centered_position_x =
+          object.position.x - rotationCenterObject.previousPosition.x;
+        var centered_position_z =
+          object.position.z - rotationCenterObject.previousPosition.z;
 
-		// Calculates new position based on alpha
-		object.position.x = (Math.cos(alpha) * centered_position_x) + (-Math.sin(alpha) * centered_position_z);
-		object.position.z = (Math.sin(alpha) * centered_position_x) + (Math.cos(alpha) * centered_position_z);
+        // Calculates new position based on alpha
+        object.position.x =
+          Math.cos(alpha) * centered_position_x +
+          -Math.sin(alpha) * centered_position_z;
+        object.position.z =
+          Math.sin(alpha) * centered_position_x +
+          Math.cos(alpha) * centered_position_z;
 
-		// Move so that rotationCenterObject is rotation center
-		object.position.x += rotationCenterObject.position.x;
-		object.position.z += rotationCenterObject.position.z;
-	}
-	</script>
-</body>
+        // Move so that rotationCenterObject is rotation center
+        object.position.x += rotationCenterObject.position.x;
+        object.position.z += rotationCenterObject.position.z;
+      }
+    </script>
+  </body>
 </html>
