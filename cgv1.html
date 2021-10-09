@@ -15,6 +15,14 @@
     </style>
 </head>
 <body>
+
+	<!-- Teilaufgabe 2: -->
+	<div class="speed-controll">
+		<label for="speed">Anzahl Umlaeufe pro Minute: <br> </label>
+		<input type="number" name="speed-controller" id="speed" min="1" max="50" step="0.5">
+	</div>
+
+
     <canvas id="renderCanvas"></canvas>
 	<script>
     // Check support
@@ -22,6 +30,7 @@
         window.alert('Browser not supported');
     } else {
 		var canvas = document.getElementById("renderCanvas");
+		var speedControllerInput = document.getElementById("speed"); //Teilaufgabe 2
 		var engine = new BABYLON.Engine(canvas, true);
 		
 		var scene = new BABYLON.Scene(engine);
@@ -109,7 +118,7 @@
 		var startTime = d.getTime();
 		var lastTime  = startTime;
 
-		var sim_year     = 1;                             // one simulated earth year in minutes
+		var sim_year     =  1;   // one simulated earth year in minutes
 		var sim_day      = sim_year / 365.24;               // one simulated earth day in minutes
 		var sim_month    = sim_year / (365.24 / 27.3);      // one simulated moon loop in minutes
 		var sim_mars_sol = sim_year * (687.0 / 365.24); 	    // one simulated mars year in minutes
@@ -144,10 +153,19 @@
 		Object.assign(sun, {previousPosition: sun.position});
 		Object.assign(mars, {previousPosition: mars.position});
 		Object.assign(satellite, {previousPosition: satellite.position});
-		
+
+
+
+		//Teilaufgabe 2:
+		speedControllerInput.addEventListener("speed-change", function (e) {
+            var speed = document.getElementById("speed").value;
+        });
+
 		scene.beforeRender = function() {
-			var d 		  = new Date();
-			var time      = d.getTime();        // get milliseconds since 1970
+
+			var d 		  = new Date(); //aktuelles Datum
+			//Wenn beim Input eine 1 steht braucht die Erde 1 Minute um 1x um die Sonne zu kreisen:
+			var time      = d.getTime() * document.getElementById("speed").value;        // get milliseconds since 1970
 			var elapsed_t = time - startTime;   // milliseconds since start
 			var delta_t   = time - lastTime;    // milliseconds since last frame
 			lastTime      = time;
