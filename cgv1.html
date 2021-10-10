@@ -17,6 +17,13 @@
     </style>
   </head>
   <body>
+	  	
+	<!-- Teilaufgabe 2: -->
+	<div class="speed-controll">
+		<label for="speed">Anzahl Umlaeufe pro Minute: <br> </label>
+		<input type="number" name="speed-controller" id="speed" min="1" max="50" value="1" step="0.5">
+	</div>
+
     <canvas id="renderCanvas"></canvas>
     <script>
       // Check support
@@ -24,6 +31,7 @@
         window.alert("Browser not supported");
       } else {
         var canvas = document.getElementById("renderCanvas");
+		var speedControllerInput = document.getElementById("speed"); //Teilaufgabe 2
         var engine = new BABYLON.Engine(canvas, true);
 
         var scene = new BABYLON.Scene(engine);
@@ -98,11 +106,31 @@
         material5.diffuseTexture.vScale = -1;
         material5.diffuseTexture.uScale = -1;
 
+		//Bonusaufgabe 2:
+		//Bildquelle: https://wallpaperaccess.com/black-and-white-space
+		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:100.0}, scene);
+		var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+		skyboxMaterial.backFaceCulling = false;
+    	var files = [
+			"assets/Space/space_left.jpg",
+            "assets/Space/space_up.jpg",
+            "assets/Space/space_front.jpg",
+            "assets/Space/space_right.jpg",
+            "assets/Space/space_down.jpg",
+            "assets/Space/space_back.jpg",
+    	];
+		skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture.CreateFromImages(files, scene);
+		skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+		skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+		skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+
         earth.material = material1;
         moon.material = material2;
         sun.material = material3;
         mars.material = material4;
         satellite.material = material5;
+		skybox.material = skyboxMaterial;	
+		
 
         // Show coordinate system, BabylonJS uses left-handed coordinates!
         // x-axis: red, y-axis: yellow, z-axis: green
@@ -197,9 +225,18 @@
         Object.assign(mars, { previousPosition: mars.position });
         Object.assign(satellite, { previousPosition: satellite.position });
 
+
+		//Teilaufgabe 2:
+		speedControllerInput.addEventListener("speed-change", function (e) {
+    		var speed = document.getElementById("speed").value;
+        });
+
         scene.beforeRender = function () {
           var d = new Date();
-          var time = d.getTime(); // get milliseconds since 1970
+
+          //Wenn beim Input eine 1 steht braucht die Erde 1 Minute um 1x um die Sonne zu kreisen:
+		  var time      = d.getTime() * document.getElementById("speed").value;        // get milliseconds since 1970
+
           var elapsed_t = time - startTime; // milliseconds since start
           var delta_t = time - lastTime; // milliseconds since last frame
           lastTime = time;
