@@ -17,19 +17,12 @@
     </style>
   </head>
   <body>
-    <!-- Teilaufgabe 2: -->
-    <div class="speed-controll">
-      <label for="speed">Anzahl Umlaeufe pro Minute: <br /> </label>
-      <input
-        type="number"
-        name="speed-controller"
-        id="speed"
-        min="0.1"
-        max="50"
-        value="1"
-        step="0.1"
-      />
-    </div>
+	  	
+  <!-- Teilaufgabe 2: -->
+  <div class="speed-controll">
+    <label for="speed">Anzahl Umlaeufe pro Minute: <br> </label>
+    <input type="number" name="speed-controller" id="speed" min="0.1" max="50" value="1" step="0.1">
+  </div>
 
     <canvas id="renderCanvas"></canvas>
     <script>
@@ -38,7 +31,7 @@
         window.alert("Browser not supported");
       } else {
         var canvas = document.getElementById("renderCanvas");
-        var speedControllerInput = document.getElementById("speed"); //Teilaufgabe 2
+		var speedControllerInput = document.getElementById("speed"); //Teilaufgabe 2
         var engine = new BABYLON.Engine(canvas, true);
 
         var scene = new BABYLON.Scene(engine);
@@ -113,36 +106,31 @@
         material5.diffuseTexture.vScale = -1;
         material5.diffuseTexture.uScale = -1;
 
-        //Bonusaufgabe 2:
-        //Bilderquelle: https://www.babylonjs-playground.com/#UU7RQ#245
-        var skybox = BABYLON.MeshBuilder.CreateBox(
-          "skyBox",
-          { size: 100.0 },
-          scene
-        );
-        var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-        skyboxMaterial.backFaceCulling = false;
-        var files = [
-          "assets/Space/space_left.jpg",
-          "assets/Space/space_up.jpg",
-          "assets/Space/space_front.jpg",
-          "assets/Space/space_right.jpg",
-          "assets/Space/space_down.jpg",
-          "assets/Space/space_back.jpg",
-        ];
-        skyboxMaterial.reflectionTexture =
-          new BABYLON.CubeTexture.CreateFromImages(files, scene);
-        skyboxMaterial.reflectionTexture.coordinatesMode =
-          BABYLON.Texture.SKYBOX_MODE;
-        skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-        skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+		//Bonusaufgabe 2:
+		//Bilderquelle: https://www.babylonjs-playground.com/#UU7RQ#245
+		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:100.0}, scene);
+		var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+		skyboxMaterial.backFaceCulling = false;
+    	var files = [
+			"assets/Space/space_left.jpg",
+            "assets/Space/space_up.jpg",
+            "assets/Space/space_front.jpg",
+            "assets/Space/space_right.jpg",
+            "assets/Space/space_down.jpg",
+            "assets/Space/space_back.jpg",
+    	];
+		skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture.CreateFromImages(files, scene);
+		skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+		skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+		skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 
         earth.material = material1;
         moon.material = material2;
         sun.material = material3;
         mars.material = material4;
         satellite.material = material5;
-        skybox.material = skyboxMaterial;
+		skybox.material = skyboxMaterial;	
+		
 
         // Show coordinate system, BabylonJS uses left-handed coordinates!
         // x-axis: red, y-axis: yellow, z-axis: green
@@ -201,7 +189,7 @@
         var startTime = d.getTime();
         var lastTime = startTime;
 
-        var sim_year = 1; // one simulated earth year in minutes
+        var sim_year = 2; // one simulated earth year in minutes
         var sim_day = sim_year / 365.24; // one simulated earth day in minutes
         var sim_month = sim_year / (365.24 / 27.3); // one simulated moon loop in minutes
         var sim_mars_sol = sim_year * (687.0 / 365.24); // one simulated mars year in minutes
@@ -237,40 +225,29 @@
         Object.assign(mars, { previousPosition: mars.position });
         Object.assign(satellite, { previousPosition: satellite.position });
 
-        //Teilaufgabe 2:
-        speedControllerInput.addEventListener("speed-change", function (e) {
-          var speed = document.getElementById("speed").value;
-        });
-
         scene.beforeRender = function () {
           var d = new Date();
+		      var time = d.getTime();        // get milliseconds since 1970
 
-          //Wenn beim Input eine 1 steht braucht die Erde 1 Minute um 1x um die Sonne zu kreisen:
-          sim_year = document.getElementById("speed").value;
-          var time = d.getTime(); // * document.getElementById("speed").value; // get milliseconds since 1970
           var elapsed_t = time - startTime; // milliseconds since start
           var delta_t = time - lastTime; // milliseconds since last frame
           lastTime = time;
 
-          //console.log(delta_t);
+          // Aufgabe 2
+          sim_year = document.getElementById("speed").value;
+
           // Earth position and rotation
           rotatePosition(earth, sun, getAlpha(sim_year, delta_t));
           earth.rotation.y += getAlpha(sim_day, delta_t);
 
           // Moon position and rotation
           rotatePosition(moon, earth, getAlpha(sim_month, delta_t));
-          moon.rotation.y -= getAlpha(sim_month, delta_t);
+          moon.rotation.y -= getAlpha(sim_month, delta_t); //dreht sich noch minimal zu schnell? ->wahrscheinlich ungenaue Werte für den Monat Mathematisch aber korrekt
 
-          //var distance_to_earth = Math.sqrt((moon.position.x - earth.position.x)^2 + (moon.position.z - earth.position.z)^2);
-          //console.log(distance_to_earth);
-          
           // Satellite position and rotation
           var satellite_cycle = sim_month / 3;
           rotatePosition(satellite, moon, -getAlpha(satellite_cycle, delta_t)); //Center Position ist nicht auf dem mond. Rundungsfehler?
           satellite.rotation.y += getAlpha(satellite_cycle, delta_t);
-
-          //var distance_to_moon = Math.sqrt(((satellite.position.x - moon.position.x)^2 + (satellite.position.z - moon.position.z)^2));
-          //console.log(distance_to_moon);
 
           // Mars position and rotation
           rotatePosition(mars, sun, getAlpha(sim_mars_sol, delta_t));
@@ -322,9 +299,8 @@
        * @oaram 	{Number} 	arg3 	Degree of movement
        */
       function rotatePosition(object, rotationCenterObject, alpha) {
-        // Set previous position to use for satellites of object
-        object.previousPosition.x = object.position.x;
-        object.previousPosition.z = object.position.z;
+        // Set previous position to use for satellites
+        object.previousPosition = Object.assign({}, object.position);
 
         // Move so that (0, 0) is rotation center
         var centered_position_x =
